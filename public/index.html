@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title></title>
-    <link rel="icon" href="data:,">
+    <link rel="icon" type="image/png" href="./jug.png">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,7 @@
       }
       .logo{
         position: relative;
-        height: 120px;
+        height: clamp(56px, 18vw, 140px);
         width: auto;
         pointer-events: none;
       }
@@ -70,7 +70,7 @@
           color: white;
           margin: 0;
           line-height: 1;
-          font-size: 60px;
+          font-size: clamp(28px, 8vw, 60px);
           letter-spacing: 2px;
           pointer-events: none;
           z-index: 10000;
@@ -106,7 +106,7 @@
         .row {
           position: fixed;
           left: 50%;
-          top: 200px;
+          top: clamp(48px, 14vh, 160px);
           transform: translateX(-50%);
           justify-content: center;
           align-items: center;
@@ -116,34 +116,32 @@
         }
         .logo {
           position: relative;
-          height: 140px;
+          height: clamp(64px, 20vw, 120px);
           width: auto;
         }
         h1 {
-          margin-top: 25px;
+          margin-top: 16px;
           text-align: center;
-          font-size: 68px;
+          font-size: clamp(28px, 10vw, 56px);
         }
       }
     
       /* Floating controls: brutalist black/white buttons */
       .controls {
         position: fixed;
-        bottom: max(200px, calc(env(safe-area-inset-bottom) + 8px));
-        left: max(100px, calc(env(safe-area-inset-left) + 8px));
+        bottom: max(80px, calc(env(safe-area-inset-bottom) + 12px));
+        left: max(16px, calc(env(safe-area-inset-left) + 12px));
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         z-index: 10001;
         pointer-events: auto;
-        padding: 6px 8px;
+        padding: 8px 10px;
         border: 1px solid rgba(255,255,255,0.9); /* skinny white outline */
         border-radius: 8px;
         background-color: black;
-        display: flex;
-        flex: 1 1 auto;
-        align-items: stretch; /* ensure all buttons match the tallest button */
-        height: 150px; /* fixed toolbar height so children can stretch to the same size */
-        width: 600px;
+        width: min(92vw, 680px);
+        align-items: stretch;
       }
       .ctrl-btn {
         appearance: none;
@@ -152,13 +150,13 @@
         border: 2px solid #000;
         background: #fff;
         color: #000;
-        padding: 12px 16px;
+        padding: 8px 10px;
         font-family: "Libre Franklin", system-ui, sans-serif;
         font-weight: 800;
         letter-spacing: 1px;
         text-transform: uppercase;
-        border-radius: 6px;
-        box-shadow: 3px 3px 0 #000;
+        border-radius: 5px;
+        box-shadow: 2px 2px 0 #000;
         cursor: pointer;
         pointer-events: auto;
         transition: background 0.12s ease, color 0.12s ease, transform 0.05s ease, box-shadow 0.05s ease;
@@ -167,11 +165,13 @@
         justify-content: center;
         white-space: normal;
         text-align: center;
-        min-width: 64px;
-        max-width:400px;
-        height: 100%; /* fill the toolbar height so all buttons match */
+        min-width: 56px;
         overflow: hidden;
         word-wrap: break-word;
+        flex: 1 1 160px;
+        font-size: clamp(11px, 1.4vw, 13px);
+        line-height: 1.1;
+        min-height: 36px;
       }
       .ctrl-btn:hover,
       .ctrl-btn:focus {
@@ -187,14 +187,13 @@
       /* Landscape: tighten up controls and make buttons more compact/square */
       @media (orientation: landscape) {
         .controls {
-          left: max(80px, calc(env(safe-area-inset-left) + 8px));
-          bottom: max(120px, calc(env(safe-area-inset-bottom) + 8px));
+          left: max(80px, calc(env(safe-area-inset-left) + 12px));
+          bottom: max(120px, calc(env(safe-area-inset-bottom) + 12px));
         }
         .ctrl-btn {
-          max-width: 250px;
+          flex: 1 1 220px;
           min-width: 64px;
-          height: 100%;
-          padding: 12px 16px;
+          padding: 10px 14px;
           border-radius: 6px;
           white-space: normal;
         }
@@ -205,7 +204,15 @@
         .controls {
           left: 50%;
           transform: translateX(-50%);
-          bottom: calc(max(200px, env(safe-area-inset-bottom)) + 6px); /* tiny extra space at bottom */
+          bottom: calc(max(16px, env(safe-area-inset-bottom)) + 8px); /* tiny extra space at bottom */
+          width: min(94vw, 640px);
+          gap: 8px;
+        }
+        .ctrl-btn {
+          flex: 1 1 100%;
+          font-size: clamp(11px, 3vw, 13px);
+          padding: clamp(6px, 2.2vw, 8px) clamp(8px, 3vw, 10px);
+          min-height: 36px;
         }
       }
     
