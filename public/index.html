@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Three.js Blue Sphere</title>
+    <link rel="icon" href="data:,">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
+
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #0b1020; /* subtle dark background for contrast */
+        color: #fff;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      }
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+      .info {
+        position: fixed;
+        top: 10px;
+        left: 12px;
+        padding: 6px 10px;
+        background: rgba(0, 0, 0, 0.35);
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1.2;
+        pointer-events: none;
+      }
+      .logo{
+        position: relative;
+        height: 120px;
+        width: auto;
+        pointer-events: none;
+      }
+      .header{
+        position: fixed;
+        top: 10px;
+        left: 10px;
+      }
+      .row{
+        position: fixed;
+        left: 100px;
+        top: 200px;
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+        align-items: flex-end;
+        z-index: 9999;
+        pointer-events: none;
+      }
+      .col{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        height: calc(100% - 20px);
+        justify-content: space-between;
+      }
+      h1{
+          font-family: "Oxanium", sans-serif;
+          font-optical-sizing: auto;
+          font-weight: 400;
+          font-style: normal;
+          color: white;
+          margin: 0;
+          line-height: 1;
+          font-size: 60px;
+          letter-spacing: 2px;
+          pointer-events: none;
+          z-index: 10000;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+          display: inline-flex;
+          align-items: center;
+      }
+      .text {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 2px;
+        pointer-events: none;
+        width: max-content;
+      }
+      .tagline {
+        font-family: "Libre Franklin", system-ui, sans-serif;
+        font-size: 16px;
+        color: rgba(255,255,255,0.9);
+        opacity: 0.95;
+        letter-spacing: 1px;
+        text-transform: lowercase;
+        margin: 0;
+        padding-bottom: 5px;
+        pointer-events: none;
+      }
+    
+      /* Responsive logo positioning:
+         - Desktop/landscape: fixed at 100px left, 200px top, larger size
+         - Portrait: centered horizontally, 300px from top
+      */
+      @media (orientation: portrait) {
+        .row {
+          position: fixed;
+          left: 50%;
+          top: 200px;
+          transform: translateX(-50%);
+          justify-content: center;
+          align-items: center;
+          gap: 12px;
+          z-index: 25;
+          pointer-events: none;
+        }
+        .logo {
+          position: relative;
+          height: 140px;
+          width: auto;
+        }
+        h1 {
+          margin-top: 25px;
+          text-align: center;
+          font-size: 68px;
+        }
+      }
+    
+      /* Floating controls: brutalist black/white buttons */
+      .controls {
+        position: fixed;
+        bottom: max(16px, env(safe-area-inset-bottom));
+        left: max(16px, env(safe-area-inset-left));
+        display: flex;
+        gap: 10px;
+        z-index: 10001;
+        pointer-events: auto;
+      }
+      .ctrl-btn {
+        appearance: none;
+        -webkit-appearance: none;
+        border: 2px solid #000;
+        background: #fff;
+        color: #000;
+        padding: 10px 14px;
+        font-family: "Libre Franklin", system-ui, sans-serif;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 0;
+        box-shadow: 3px 3px 0 #000;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: background 0.12s ease, color 0.12s ease, transform 0.05s ease, box-shadow 0.05s ease;
+      }
+      .ctrl-btn:hover,
+      .ctrl-btn:focus {
+        background: #000;
+        color: #fff;
+        outline: none;
+      }
+      .ctrl-btn:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 #000;
+      }
+
+      /* Portrait: center horizontally at bottom */
+      @media (orientation: portrait) {
+        .controls {
+          left: 50%;
+          transform: translateX(-50%);
+          bottom: max(16px, env(safe-area-inset-bottom));
+        }
+      }
+    
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+      <div class="row">
+        <img src="./jug.png" class="logo"> 
+        <div class="text">
+          <h1>JUG</h1>
+          <div class="tagline">metal jugs you can take jeebs out of</div>
+        </div>
+      </div>
+
+      <div class="controls" role="toolbar" aria-label="Actions">
+        <button class="ctrl-btn" type="button">Action One</button>
+        <button class="ctrl-btn" type="button">Action Two</button>
+        <button class="ctrl-btn" type="button">Action Three</button>
+        <button class="ctrl-btn" type="button">Action Four</button>
+      </div>
+
+
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+    <script type="module">
+      import * as THREE from 'three';
+      import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+      import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+      import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+
+      const container = document.getElementById('app');
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.physicallyCorrectLights = true;
+      container.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+
+      // HDRI environment setup (background + IBL)
+      // Use ACES tone mapping for more natural HDR response
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.6;
+
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+      new RGBELoader().load('/hdri.hdr', (hdrTexture) => {
+          hdrTexture.mapping = THREE.EquirectangularReflectionMapping;
+
+          // Do NOT set scene.background = hdrTexture;
+          // Instead, keep only the environment for lighting:
+          const envMap = pmremGenerator.fromEquirectangular(hdrTexture).texture;
+          scene.environment = envMap;
+
+          pmremGenerator.dispose();
+      });
+
+      // Camera
+      const camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+      camera.position.set(0, 0, 0);
+
+      // Orbit controls
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.015;
+      // Start with a gentle auto-rotation in a random direction
+      controls.autoRotate = true;
+      // Low speed; randomize direction (negative = clockwise, positive = counterclockwise)
+      controls.autoRotateSpeed = (Math.random() < 0.5 ? -1 : 1) * 0.35;
+
+      // Lights
+      // scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+      // const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+      // dirLight.position.set(3, 4, 5);
+      // scene.add(dirLight);
+
+      // Load FBX model
+      const loader = new FBXLoader();
+      loader.load('/jug.fbx', (object) => {
+        // Center and scale the model to a reasonable size
+        const box = new THREE.Box3().setFromObject(object);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        object.position.sub(center); // center at origin
+        object.rotation.x = Math.PI / 2; // 90° around X
+        object.rotation.y = -3 * (Math.PI / 4); // 90° around X
+
+        const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+        const scale = 2 / maxAxis; // fit roughly within view
+        object.scale.setScalar(scale);
+
+        // Convert non-PBR materials to MeshStandardMaterial, ensure sRGB maps, boost IBL response
+        object.traverse((child) => {
+          if (child.isMesh && child.material) {
+            const applyTo = Array.isArray(child.material) ? child.material : [child.material];
+            const converted = applyTo.map((m) => {
+              let mat = m;
+              if (!m.isMeshStandardMaterial && !m.isMeshPhysicalMaterial) {
+                const n = new THREE.MeshStandardMaterial();
+                n.name = m.name || 'ConvertedMat';
+                if (m.color) n.color.copy(m.color);
+                if (m.map) {
+                  n.map = m.map;
+                  if (n.map.colorSpace !== THREE.SRGBColorSpace) {
+                    n.map.colorSpace = THREE.SRGBColorSpace;
+                    n.map.needsUpdate = true;
+                  }
+                }
+                if (m.normalMap) n.normalMap = m.normalMap;
+                // Default to a metal look for the milk jug
+                n.roughness = m.roughness !== undefined ? m.roughness : 0.25;
+                n.metalness = m.metalness !== undefined ? m.metalness : 1.0;
+                mat = n;
+              } else {
+                if (m.map && m.map.colorSpace !== THREE.SRGBColorSpace) {
+                  m.map.colorSpace = THREE.SRGBColorSpace;
+                  m.map.needsUpdate = true;
+                }
+                m.metalness = 1.0;
+                m.roughness = m.roughness !== undefined ? m.roughness : 0.25;
+              }
+              mat.envMapIntensity = Math.max(mat.envMapIntensity ?? 0, 1);
+              return mat;
+            });
+            child.material = Array.isArray(child.material) ? converted : converted[0];
+          }
+        });
+
+
+        scene.add(object);
+
+        // Focus controls and frame camera on the model's center
+        {
+          // Recompute bounds after scaling to get accurate center/size
+          const fitBox = new THREE.Box3().setFromObject(object);
+          const size2 = fitBox.getSize(new THREE.Vector3());
+          const center2 = fitBox.getCenter(new THREE.Vector3());
+
+          // Set orbit pivot to the model's center in world space
+          controls.target.copy(center2);
+
+          // Compute a distance that frames the object based on FOV and aspect
+          const vFOV = THREE.MathUtils.degToRad(camera.fov);
+          const hFOV = 2 * Math.atan(Math.tan(vFOV / 2) * camera.aspect);
+          const fitHeightDistance = size2.y / (2 * Math.tan(vFOV / 2));
+          const fitWidthDistance = size2.x / (2 * Math.tan(hFOV / 2));
+          const distance = 2 * Math.max(fitHeightDistance, fitWidthDistance);
+
+          // Keep current viewing direction, just move to the right distance
+          const dir = camera.position.clone().sub(controls.target).normalize();
+          camera.position.copy(center2.clone().add(dir.multiplyScalar(distance)));
+
+          // Update camera clipping and controls limits
+          camera.near = distance / 100;
+          camera.far = distance * 100;
+          camera.updateProjectionMatrix();
+
+          controls.maxDistance = distance * 10;
+          controls.update();
+        }
+      }, undefined, (err) => {
+        console.error('Failed to load FBX:', err);
+      });
+
+      // Handle resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // Render loop
+      renderer.setAnimationLoop(() => {
+        controls.update();
+        renderer.render(scene, camera);
+      });
+    </script>
+  </body>
+</html>
