@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Three.js Blue Sphere</title>
+    <title></title>
     <link rel="icon" href="data:,">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,29 +129,49 @@
       /* Floating controls: brutalist black/white buttons */
       .controls {
         position: fixed;
-        bottom: max(16px, env(safe-area-inset-bottom));
-        left: max(16px, env(safe-area-inset-left));
+        bottom: max(200px, calc(env(safe-area-inset-bottom) + 8px));
+        left: max(100px, calc(env(safe-area-inset-left) + 8px));
         display: flex;
         gap: 10px;
         z-index: 10001;
         pointer-events: auto;
+        padding: 6px 8px;
+        border: 1px solid rgba(255,255,255,0.9); /* skinny white outline */
+        border-radius: 8px;
+        background-color: black;
+        display: flex;
+        flex: 1 1 auto;
+        align-items: stretch; /* ensure all buttons match the tallest button */
+        height: 150px; /* fixed toolbar height so children can stretch to the same size */
+        width: 600px;
       }
       .ctrl-btn {
         appearance: none;
         -webkit-appearance: none;
+        box-sizing: border-box;
         border: 2px solid #000;
         background: #fff;
         color: #000;
-        padding: 10px 14px;
+        padding: 12px 16px;
         font-family: "Libre Franklin", system-ui, sans-serif;
         font-weight: 800;
         letter-spacing: 1px;
         text-transform: uppercase;
-        border-radius: 0;
+        border-radius: 6px;
         box-shadow: 3px 3px 0 #000;
         cursor: pointer;
         pointer-events: auto;
         transition: background 0.12s ease, color 0.12s ease, transform 0.05s ease, box-shadow 0.05s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: normal;
+        text-align: center;
+        min-width: 64px;
+        max-width:400px;
+        height: 100%; /* fill the toolbar height so all buttons match */
+        overflow: hidden;
+        word-wrap: break-word;
       }
       .ctrl-btn:hover,
       .ctrl-btn:focus {
@@ -164,12 +184,28 @@
         box-shadow: 1px 1px 0 #000;
       }
 
+      /* Landscape: tighten up controls and make buttons more compact/square */
+      @media (orientation: landscape) {
+        .controls {
+          left: max(80px, calc(env(safe-area-inset-left) + 8px));
+          bottom: max(120px, calc(env(safe-area-inset-bottom) + 8px));
+        }
+        .ctrl-btn {
+          max-width: 250px;
+          min-width: 64px;
+          height: 100%;
+          padding: 12px 16px;
+          border-radius: 6px;
+          white-space: normal;
+        }
+      }
+
       /* Portrait: center horizontally at bottom */
       @media (orientation: portrait) {
         .controls {
           left: 50%;
           transform: translateX(-50%);
-          bottom: max(16px, env(safe-area-inset-bottom));
+          bottom: calc(max(200px, env(safe-area-inset-bottom)) + 6px); /* tiny extra space at bottom */
         }
       }
     
@@ -186,10 +222,10 @@
       </div>
 
       <div class="controls" role="toolbar" aria-label="Actions">
-        <button class="ctrl-btn" type="button">Action One</button>
-        <button class="ctrl-btn" type="button">Action Two</button>
-        <button class="ctrl-btn" type="button">Action Three</button>
-        <button class="ctrl-btn" type="button">Action Four</button>
+        <button class="ctrl-btn" type="button" onclick="window.location.href='/store'">Support the Project (TShirt) — $25</button>
+        <button class="ctrl-btn" type="button" onclick="window.location.href='/store'">Pre-Order the Metal Jug — $50</button>
+        <button class="ctrl-btn" type="button" onclick="window.location.href='/store'">Pre-Order a Signed Metal Jug — $75</button>
+        <button class="ctrl-btn" type="button" onclick="window.location.href='/store'">Pre-Order a Signed Metal Jug and a shoutout - $100</button>
       </div>
 
 
@@ -342,6 +378,21 @@
           camera.updateProjectionMatrix();
 
           controls.maxDistance = distance * 10;
+
+          // Bias model to the right on initial load in landscape orientation
+          if (window.innerWidth > window.innerHeight) {
+            // Use screen-space right vector and PAN both camera and target for a true horizontal shift
+            const forward = new THREE.Vector3();
+            camera.getWorldDirection(forward).normalize();
+            const right = new THREE.Vector3().crossVectors(forward, camera.up).normalize();
+            const halfWidth = distance * Math.tan(hFOV / 2);
+            const k = -0.20; // portion of half view width to pan (increase for more offset)
+            const pan = right.clone().multiplyScalar(-k * halfWidth); // pan left so subject appears on the right
+            controls.target.add(pan);
+            camera.position.add(pan);
+            object.rotation.x
+          }
+
           controls.update();
         }
       }, undefined, (err) => {
